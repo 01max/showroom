@@ -1,0 +1,98 @@
+{
+  "resources": {
+    "results": {
+      "products": [
+        {
+          "available": true,
+          "body": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>",
+          "compare_at_price_max": "0.00",
+          "compare_at_price_min": "0.00",
+          "handle": "lorem-road-bike",
+          "id": 1000000000001,
+          "image": "https://cdn.shopify.com/s/files/1/0001/0001/0001/files/lorem-road-bike-1.jpg?v=1700000001",
+          "price": "899.00",
+          "price_max": "899.00",
+          "price_min": "749.00",
+          "title": "Lorem Road Bike",
+          "type": "Road Bike",
+          "url": "/products/lorem-road-bike",
+          "variants": [
+            {
+              "available": true,
+              "id": 2000000000001,
+              "price": "899.00",
+              "title": "S / Red"
+            },
+            {
+              "available": true,
+              "id": 2000000000002,
+              "price": "749.00",
+              "title": "M / Blue"
+            }
+          ]
+        },
+        {
+          "available": false,
+          "body": "<p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>",
+          "compare_at_price_max": "649.00",
+          "compare_at_price_min": "649.00",
+          "handle": "ipsum-city-cruiser",
+          "id": 1000000000002,
+          "image": "https://cdn.shopify.com/s/files/1/0001/0001/0001/files/ipsum-city-cruiser-1.jpg?v=1700000002",
+          "price": "499.00",
+          "price_max": "499.00",
+          "price_min": "499.00",
+          "title": "Ipsum City Cruiser",
+          "type": "City Bike",
+          "url": "/products/ipsum-city-cruiser",
+          "variants": [
+            {
+              "available": false,
+              "id": 2000000000003,
+              "price": "499.00",
+              "title": "Default Title"
+            }
+          ]
+        }
+      ],
+      "collections": [
+        {
+          "body": "<p>Consectetur adipiscing elit sed do eiusmod tempor.</p>",
+          "handle": "lorem-helmets",
+          "id": 4000000000001,
+          "image": null,
+          "title": "Lorem Helmets",
+          "url": "/collections/lorem-helmets"
+        }
+      ],
+      "pages": [
+        {
+          "author": "Lorem Admin",
+          "body": "<p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>",
+          "handle": "about-lorem-bikes",
+          "id": 5000000000001,
+          "title": "About Lorem Bikes",
+          "url": "/pages/about-lorem-bikes"
+        }
+      ],
+      "articles": [
+        {
+          "author": "Ipsum Writer",
+          "body": "<p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim.</p>",
+          "handle": "how-to-choose-a-road-bike",
+          "id": 6000000000001,
+          "image": "https://cdn.shopify.com/s/files/1/0001/0001/0001/files/article-road-bike-guide.jpg?v=1700000003",
+          "published_at": "2024-03-01T10:05:00+01:00",
+          "title": "How to Choose a Road Bike",
+          "url": "/blogs/news/how-to-choose-a-road-bike"
+        }
+      ],
+      "queries": [
+        {
+          "text": "lorem road bike",
+          "styled_text": "<strong>lorem</strong> road bike"
+        }
+      ]
+    }
+  }
+}

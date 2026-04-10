@@ -1,0 +1,187 @@
+{
+  "products": [
+    {
+      "id": 1000000000001,
+      "title": "Lorem Road Bike",
+      "handle": "lorem-road-bike",
+      "body_html": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus euismod volutpat lectus vitae dignissim.</p>",
+      "published_at": "2024-03-01T10:00:00+01:00",
+      "created_at": "2024-03-01T10:00:00+01:00",
+      "updated_at": "2024-06-15T14:30:00+02:00",
+      "vendor": "Lorem Cycles",
+      "product_type": "Road Bike",
+      "tags": [
+        "road",
+        "lorem",
+        "size:S",
+        "size:M",
+        "color:red",
+        "color:blue"
+      ],
+      "variants": [
+        {
+          "id": 2000000000001,
+          "title": "S / Red",
+          "option1": "S",
+          "option2": "Red",
+          "option3": null,
+          "sku": "LRC-S-RED",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "899.00",
+          "grams": 8200,
+          "compare_at_price": null,
+          "position": 1,
+          "product_id": 1000000000001,
+          "created_at": "2024-03-01T10:00:00+01:00",
+          "updated_at": "2024-06-15T14:30:00+02:00"
+        },
+        {
+          "id": 2000000000002,
+          "title": "M / Blue",
+          "option1": "M",
+          "option2": "Blue",
+          "option3": null,
+          "sku": "LRC-M-BLU",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": true,
+          "price": "749.00",
+          "grams": 8400,
+          "compare_at_price": "899.00",
+          "position": 2,
+          "product_id": 1000000000001,
+          "created_at": "2024-03-01T10:00:00+01:00",
+          "updated_at": "2024-06-15T14:30:00+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 3000000000001,
+          "created_at": "2024-03-01T10:00:00+01:00",
+          "position": 1,
+          "updated_at": "2024-03-01T10:00:00+01:00",
+          "product_id": 1000000000001,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0001/0001/0001/files/lorem-road-bike-1.jpg?v=1700000001",
+          "width": 2048,
+          "height": 1365
+        },
+        {
+          "id": 3000000000002,
+          "created_at": "2024-03-01T10:00:00+01:00",
+          "position": 2,
+          "updated_at": "2024-03-01T10:00:00+01:00",
+          "product_id": 1000000000001,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0001/0001/0001/files/lorem-road-bike-2.jpg?v=1700000001",
+          "width": 2048,
+          "height": 1365
+        },
+        {
+          "id": 3000000000003,
+          "created_at": "2024-03-01T10:00:00+01:00",
+          "position": 3,
+          "updated_at": "2024-03-01T10:00:00+01:00",
+          "product_id": 1000000000001,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0001/0001/0001/files/lorem-road-bike-3.jpg?v=1700000001",
+          "width": 2048,
+          "height": 1365
+        }
+      ],
+      "options": [
+        {
+          "name": "Size",
+          "position": 1,
+          "values": [
+            "S",
+            "M"
+          ]
+        },
+        {
+          "name": "Color",
+          "position": 2,
+          "values": [
+            "Red",
+            "Blue"
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1000000000002,
+      "title": "Ipsum City Cruiser",
+      "handle": "ipsum-city-cruiser",
+      "body_html": "<p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis.</p>",
+      "published_at": "2024-03-01T10:00:00+01:00",
+      "created_at": "2024-03-01T10:00:00+01:00",
+      "updated_at": "2024-06-15T14:30:00+02:00",
+      "vendor": "Ipsum Vélo",
+      "product_type": "City Bike",
+      "tags": [
+        "city",
+        "ipsum",
+        "size:one-size",
+        "color:black"
+      ],
+      "variants": [
+        {
+          "id": 2000000000003,
+          "title": "Default Title",
+          "option1": "Default Title",
+          "option2": null,
+          "option3": null,
+          "sku": "IVC-ONE-BLK",
+          "requires_shipping": true,
+          "taxable": true,
+          "featured_image": null,
+          "available": false,
+          "price": "499.00",
+          "grams": 12000,
+          "compare_at_price": "649.00",
+          "position": 1,
+          "product_id": 1000000000002,
+          "created_at": "2024-03-01T10:00:00+01:00",
+          "updated_at": "2024-06-15T14:30:00+02:00"
+        }
+      ],
+      "images": [
+        {
+          "id": 3000000000004,
+          "created_at": "2024-03-01T10:00:00+01:00",
+          "position": 1,
+          "updated_at": "2024-03-01T10:00:00+01:00",
+          "product_id": 1000000000002,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0001/0001/0001/files/ipsum-city-cruiser-1.jpg?v=1700000002",
+          "width": 1920,
+          "height": 1280
+        },
+        {
+          "id": 3000000000005,
+          "created_at": "2024-03-01T10:00:00+01:00",
+          "position": 2,
+          "updated_at": "2024-03-01T10:00:00+01:00",
+          "product_id": 1000000000002,
+          "variant_ids": [],
+          "src": "https://cdn.shopify.com/s/files/1/0001/0001/0001/files/ipsum-city-cruiser-2.jpg?v=1700000002",
+          "width": 1920,
+          "height": 1280
+        }
+      ],
+      "options": [
+        {
+          "name": "Title",
+          "position": 1,
+          "values": [
+            "Default Title"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "collections": [
+    {
+      "id": 4000000000001,
+      "title": "Lorem Helmets",
+      "handle": "lorem-helmets",
+      "description": "Consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore.",
+      "published_at": "2024-03-01T10:00:00+01:00",
+      "updated_at": "2024-06-15T14:30:00+02:00",
+      "image": null,
+      "products_count": 2
+    },
+    {
+      "id": 4000000000002,
+      "title": "Ipsum Locks",
+      "handle": "ipsum-locks",
+      "description": "Ut enim ad minim veniam quis nostrud exercitation ullamco laboris.",
+      "published_at": "2024-03-01T10:00:00+01:00",
+      "updated_at": "2024-06-15T14:30:00+02:00",
+      "image": null,
+      "products_count": 1
+    }
+  ]
+}
