@@ -14,50 +14,52 @@ module Showroom
     has_many :images,   ProductImage
     has_many :options,  ProductOption
 
-    # Fetches products matching the given query parameters.
-    #
-    # @param params [Hash] Shopify query parameters (e.g. product_type:, vendor:)
-    # @return [Array<Product>]
-    def self.where(**params)
-      Showroom.client.get('/products.json', params)
-              .fetch('products', [])
-              .map { |h| new(h) }
-    end
+    class << self
+      # Fetches products matching the given query parameters.
+      #
+      # @param params [Hash] Shopify query parameters (e.g. product_type:, vendor:)
+      # @return [Array<Product>]
+      def where(**params)
+        Showroom.client.get('/products.json', params)
+                .fetch('products', [])
+                .map { |h| new(h) }
+      end
 
-    # Fetches a single product by handle.
-    #
-    # @param handle [String] the product handle
-    # @return [Product]
-    # @raise [Showroom::NotFound] when the product is not found
-    def self.find(handle)
-      Showroom.client.get("/products/#{handle}.json")
-              .fetch('product') { raise Showroom::NotFound, handle }
-              .then { |h| new(h) }
-    end
+      # Fetches a single product by handle.
+      #
+      # @param handle [String] the product handle
+      # @return [Product]
+      # @raise [Showroom::NotFound] when the product is not found
+      def find(handle)
+        Showroom.client.get("/products/#{handle}.json")
+                .fetch('product') { raise Showroom::NotFound, handle }
+                .then { |h| new(h) }
+      end
 
-    # Returns an Enumerator that lazily iterates over all products across pages.
-    #
-    # @param params [Hash] additional query parameters
-    # @return [Enumerator<Product>]
-    def self.all(**params)
-      Enumerator.new do |yielder|
-        each_page(**params) do |page_products, _page|
-          page_products.each { |p| yielder << p }
+      # Returns an Enumerator that lazily iterates over all products across pages.
+      #
+      # @param params [Hash] additional query parameters
+      # @return [Enumerator<Product>]
+      def all(**params)
+        Enumerator.new do |yielder|
+          each_page(**params) do |page_products, _page|
+            page_products.each { |p| yielder << p }
+          end
         end
       end
-    end
 
-    # Iterates through pages of products, yielding each page.
-    #
-    # @param limit [Integer] results per page (defaults to +Showroom.per_page+)
-    # @param params [Hash] additional query parameters
-    # @yield [products, page] the array of products for the page and the 1-based page number
-    # @yieldparam products [Array<Product>]
-    # @yieldparam page [Integer]
-    # @return [void]
-    def self.each_page(limit: Showroom.per_page, **params, &blk)
-      Showroom.client.paginate('/products.json', 'products', params.merge(limit: limit)) do |items, page|
-        blk.call(items.map { |h| new(h) }, page)
+      # Iterates through pages of products, yielding each page.
+      #
+      # @param limit [Integer] results per page (defaults to +Showroom.per_page+)
+      # @param params [Hash] additional query parameters
+      # @yield [products, page] the array of products for the page and the 1-based page number
+      # @yieldparam products [Array<Product>]
+      # @yieldparam page [Integer]
+      # @return [void]
+      def each_page(limit: Showroom.per_page, **params, &blk)
+        Showroom.client.paginate('/products.json', 'products', params.merge(limit: limit)) do |items, page|
+          blk.call(items.map { |h| new(h) }, page)
+        end
       end
     end
 

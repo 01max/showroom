@@ -22,48 +22,50 @@ module Showroom
       @attrs = hash.transform_keys(&:to_s)
     end
 
-    # Declares which attribute keys are included in {#inspect} output.
-    #
-    # @param keys [Array<Symbol>] attribute names to display in inspect
-    # @return [void]
-    def self.main_attrs(*keys)
-      @main_attrs = keys.map(&:to_s)
-    end
-
-    # Returns the list of keys configured via {.main_attrs}.
-    #
-    # @return [Array<String>]
-    def self.main_attr_keys
-      @main_attrs || []
-    end
-
-    # Defines a reader that wraps the array at +attrs[name]+ as instances
-    # of +klass+.
-    #
-    # @param name [Symbol] attribute name (plural)
-    # @param klass [Class] model class to wrap each element in
-    # @return [void]
-    def self.has_many(name, klass) # rubocop:disable Naming/PredicatePrefix
-      define_method(name) do
-        @attrs[name.to_s] = Array(@attrs[name.to_s]).map do |item|
-          item.is_a?(klass) ? item : klass.new(item)
-        end
-        @attrs[name.to_s]
+    class << self
+      # Declares which attribute keys are included in {#inspect} output.
+      #
+      # @param keys [Array<Symbol>] attribute names to display in inspect
+      # @return [void]
+      def main_attrs(*keys)
+        @main_attrs = keys.map(&:to_s)
       end
-    end
 
-    # Defines a reader that wraps the hash at +attrs[name]+ as an instance
-    # of +klass+, or returns +nil+ when absent.
-    #
-    # @param name [Symbol] attribute name (singular)
-    # @param klass [Class] model class to wrap the value in
-    # @return [void]
-    def self.has_one(name, klass) # rubocop:disable Naming/PredicatePrefix
-      define_method(name) do
-        value = @attrs[name.to_s]
-        return nil if value.nil?
+      # Returns the list of keys configured via {.main_attrs}.
+      #
+      # @return [Array<String>]
+      def main_attr_keys
+        @main_attrs || []
+      end
 
-        value.is_a?(klass) ? value : klass.new(value)
+      # Defines a reader that wraps the array at +attrs[name]+ as instances
+      # of +klass+.
+      #
+      # @param name [Symbol] attribute name (plural)
+      # @param klass [Class] model class to wrap each element in
+      # @return [void]
+      def has_many(name, klass) # rubocop:disable Naming/PredicatePrefix
+        define_method(name) do
+          @attrs[name.to_s] = Array(@attrs[name.to_s]).map do |item|
+            item.is_a?(klass) ? item : klass.new(item)
+          end
+          @attrs[name.to_s]
+        end
+      end
+
+      # Defines a reader that wraps the hash at +attrs[name]+ as an instance
+      # of +klass+, or returns +nil+ when absent.
+      #
+      # @param name [Symbol] attribute name (singular)
+      # @param klass [Class] model class to wrap the value in
+      # @return [void]
+      def has_one(name, klass) # rubocop:disable Naming/PredicatePrefix
+        define_method(name) do
+          value = @attrs[name.to_s]
+          return nil if value.nil?
+
+          value.is_a?(klass) ? value : klass.new(value)
+        end
       end
     end
 
