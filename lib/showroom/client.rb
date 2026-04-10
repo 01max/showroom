@@ -2,6 +2,7 @@
 
 require_relative 'core/configurable'
 require_relative 'core/connection'
+require_relative 'models'
 
 module Showroom
   # A configured HTTP client for a single Showroom store.
@@ -36,6 +37,25 @@ module Showroom
     def initialize(**opts)
       reset!
       opts.each { |key, value| send(:"#{key}=", value) }
+    end
+
+    # Fetches products from the store.
+    #
+    # @param params [Hash] Shopify query parameters
+    # @return [Array<Product>]
+    def products(**params)
+      get('/products.json', params).fetch('products', []).map { |h| Product.new(h) }
+    end
+
+    # Fetches a single product by handle.
+    #
+    # @param handle [String] the product handle
+    # @return [Product]
+    # @raise [Showroom::NotFound] when the product is not found
+    def product(handle)
+      get("/products/#{handle}.json")
+        .fetch('product') { raise Showroom::NotFound, handle }
+        .then { |h| Product.new(h) }
     end
   end
 end

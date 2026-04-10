@@ -8,6 +8,7 @@ require_relative 'showroom/core/store_url'
 require_relative 'showroom/http/middleware/raise_error'
 require_relative 'showroom/core/connection'
 require_relative 'showroom/client'
+require_relative 'showroom/models'
 
 # Top-level namespace for the Showroom gem.
 #
@@ -56,5 +57,22 @@ module Showroom
   # @return [self]
   def self.setup(&)
     configure(&)
+  end
+
+  # Fetches products from the configured store.
+  #
+  # @param params [Hash] Shopify query parameters
+  # @return [Array<Product>]
+  def self.products(**params)
+    Product.where(**params)
+  end
+
+  # Fetches a single product by handle from the configured store.
+  #
+  # @param handle [String] the product handle
+  # @return [Product]
+  # @raise [Showroom::NotFound] when the product is not found
+  def self.product(handle)
+    Product.find(handle)
   end
 end
