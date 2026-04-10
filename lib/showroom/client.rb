@@ -57,5 +57,24 @@ module Showroom
         .fetch('product') { raise Showroom::NotFound, handle }
         .then { |h| Product.new(h) }
     end
+
+    # Fetches collections from the store.
+    #
+    # @param params [Hash] Shopify query parameters
+    # @return [Array<Collection>]
+    def collections(**params)
+      get('/collections.json', params).fetch('collections', []).map { |h| Collection.new(h) }
+    end
+
+    # Fetches a single collection by handle.
+    #
+    # @param handle [String] the collection handle
+    # @return [Collection]
+    # @raise [Showroom::NotFound] when the collection is not found
+    def collection(handle)
+      get("/collections/#{handle}.json")
+        .fetch('collection') { raise Showroom::NotFound, handle }
+        .then { |h| Collection.new(h) }
+    end
   end
 end

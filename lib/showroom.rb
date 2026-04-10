@@ -75,4 +75,21 @@ module Showroom
   def self.product(handle)
     Product.find(handle)
   end
+
+  # Fetches collections from the configured store.
+  #
+  # @param params [Hash] Shopify query parameters
+  # @return [Array<Collection>]
+  def self.collections(**params)
+    Collection.where(**params)
+  end
+
+  # Fetches a single collection by handle from the configured store.
+  #
+  # @param handle [String] the collection handle
+  # @return [Collection]
+  # @raise [Showroom::NotFound] when the collection is not found
+  def self.collection(handle)
+    Collection.find(handle)
+  end
 end
