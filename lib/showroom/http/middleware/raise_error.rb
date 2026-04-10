@@ -3,7 +3,9 @@
 require 'faraday'
 
 module Showroom
+  # Faraday HTTP layer (adapters, middleware).
   module Http
+    # Faraday middleware classes.
     module Middleware
       # Faraday middleware that maps HTTP error statuses and parsing failures
       # to Showroom error classes.

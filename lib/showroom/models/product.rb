@@ -49,7 +49,7 @@ module Showroom
 
     # Iterates through pages of products, yielding each page.
     #
-    # @param limit [Integer] results per page (defaults to {Showroom.per_page})
+    # @param limit [Integer] results per page (defaults to +Showroom.per_page+)
     # @param params [Hash] additional query parameters
     # @yield [products, page] the array of products for the page and the 1-based page number
     # @yieldparam products [Array<Product>]

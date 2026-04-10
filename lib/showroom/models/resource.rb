@@ -106,7 +106,6 @@ module Showroom
     #
     # @param name [Symbol] method name
     # @param args [Array] method arguments (none expected for attr readers)
-    # @param block [Proc, nil]
     # @return [Object, nil]
     def method_missing(name, *args, &)
       key = name.to_s

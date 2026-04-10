@@ -32,7 +32,7 @@ module Showroom
 
       # Iterates through paginated responses, yielding each page of items.
       #
-      # Stops when a page returns an empty array or {pagination_depth} is
+      # Stops when a page returns an empty array or +pagination_depth+ is
       # reached.
       #
       # @param path [String] path relative to the store base URL
