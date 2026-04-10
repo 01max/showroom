@@ -5,3 +5,5 @@
 /pkg/
 *.gem
 Gemfile.lock
+.env
+.DS_Store
