@@ -16,7 +16,6 @@ module Showroom
     #   suggestion = result.queries.first
     #   suggestion.load  # => NoMethodError
     class Suggestion < Resource
-
       class << self
         # Override in subclasses to declare the corresponding full model class.
         #

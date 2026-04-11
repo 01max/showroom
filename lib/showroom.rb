@@ -95,8 +95,10 @@ module Showroom
 
   # Calls the Shopify search suggest endpoint and returns a {Search::Result}.
   #
+  # All keyword arguments are forwarded verbatim to {Search.suggest}
+  # (accepted keys: +types:+, +limit:+; see {Search.suggest} for details).
+  #
   # @param query_str [String] the search query
-  # @param params [Hash] keyword arguments forwarded to {Search.suggest}
   # @return [Search::Result]
   def self.search(query_str, **)
     Search.suggest(query_str, **)
