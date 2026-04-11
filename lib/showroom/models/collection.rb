@@ -36,9 +36,14 @@ module Showroom
       end
     end
 
-    # Fetches the products belonging to this collection.
+    # Fetches a single page of products belonging to this collection.
     #
-    # @param params [Hash] Shopify query parameters
+    # Returns at most one page of results. Use +limit: 250+ to maximise the
+    # number of products returned in a single request. For collections with
+    # more products than the page size, pass +page:+ explicitly to retrieve
+    # subsequent pages.
+    #
+    # @param params [Hash] Shopify query parameters (e.g. +limit:+, +page:+)
     # @return [Array<Product>]
     def products(**params)
       Showroom.client.get("/collections/#{handle}/products.json", params)
