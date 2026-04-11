@@ -9,7 +9,7 @@ module Showroom
     #     'title' => 'About Lorem Bikes', 'handle' => 'about-lorem-bikes'
     #   )
     #   suggestion.title  # => "About Lorem Bikes"
-    class PageSuggestion < Resource
+    class PageSuggestion < Suggestion
       main_attrs :id, :title, :handle
     end
   end

@@ -7,7 +7,7 @@ module Showroom
     # @example
     #   suggestion = Showroom::Search::QuerySuggestion.new('text' => 'lorem road bike')
     #   suggestion.text  # => "lorem road bike"
-    class QuerySuggestion < Resource
+    class QuerySuggestion < Suggestion
       main_attrs :text
     end
   end

@@ -7,7 +7,7 @@ module Showroom
     # @example
     #   suggestion = Showroom::Search::ArticleSuggestion.new('title' => 'How to Choose a Road Bike')
     #   suggestion.title  # => "How to Choose a Road Bike"
-    class ArticleSuggestion < Resource
+    class ArticleSuggestion < Suggestion
       main_attrs :id, :title, :handle
     end
   end

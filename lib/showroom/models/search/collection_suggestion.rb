@@ -7,8 +7,13 @@ module Showroom
     # @example
     #   suggestion = Showroom::Search::CollectionSuggestion.new('title' => 'Lorem Helmets', 'handle' => 'lorem-helmets')
     #   suggestion.title  # => "Lorem Helmets"
-    class CollectionSuggestion < Resource
+    class CollectionSuggestion < Suggestion
       main_attrs :id, :title, :handle
+
+      # @return [Class] the full model class for this suggestion type
+      def self.complete_model_class
+        Collection
+      end
     end
   end
 end
