@@ -13,6 +13,13 @@ module Showroom
       # @return [Faraday::Response, nil] the last HTTP response object
       attr_reader :last_response
 
+      # Returns the canonical HTTPS base URL for the configured store.
+      #
+      # @return [String]
+      def base_url
+        StoreUrl.resolve(store)
+      end
+
       # Memoized Faraday connection built from the current configuration.
       #
       # @return [Faraday::Connection]

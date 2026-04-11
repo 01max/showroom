@@ -71,11 +71,14 @@ product.vendor         # => "Lorem Cycles"
 product.available?     # => true  (any variant in stock)
 product.price          # => "749.00"  (lowest variant price)
 product.price_range    # => "749.00–899.00"
-product.featured_image # => #<Showroom::ProductImage ...>
+product.prices         # => ["749.00", "899.00"]  (unique prices from all variants)
+product.url            # => "https://acme.myshopify.com/products/lorem-road-bike"
+product.featured_image # => #<Showroom::ProductImage ...>  (first image)
+product.main_image     # => #<Showroom::ProductImage ...>  (image with position 1)
 
 # Variants
 product.variants.each do |v|
-  puts "#{v.title}  #{v.price}  on_sale=#{v.on_sale?}  available=#{v.available?}"
+  puts "#{v.title}  #{v.price}  #{v.compare_at_price}  on_sale=#{v.on_sale?}  available=#{v.available?}"
 end
 
 # All pages — returns an Enumerator

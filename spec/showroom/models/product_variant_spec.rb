@@ -88,6 +88,26 @@ RSpec.describe Showroom::ProductVariant do
     end
   end
 
+  describe '#compare_at_price' do
+    it 'returns the compare_at_price value' do
+      v = described_class.new('compare_at_price' => '899.00')
+      expect(v.compare_at_price).to eq('899.00')
+    end
+
+    it 'returns nil when absent' do
+      v = described_class.new('compare_at_price' => nil)
+      expect(v.compare_at_price).to be_nil
+    end
+  end
+
+  describe '#inspect' do
+    it 'includes compare_at_price in the output' do
+      v = described_class.new('id' => 1, 'title' => 'S / Red', 'price' => '749.00',
+                              'compare_at_price' => '899.00', 'sku' => 'ABC')
+      expect(v.inspect).to include('compare_at_price: "899.00"')
+    end
+  end
+
   describe '#options' do
     it 'returns non-nil option values in order' do
       v = described_class.new('option1' => 'S', 'option2' => 'Red', 'option3' => nil)

@@ -138,5 +138,36 @@ module Showroom
     def featured_image
       images.first
     end
+
+    # Returns the canonical storefront URL for this product.
+    #
+    # @return [String]
+    def url
+      "#{Showroom.client.base_url}/products/#{handle}"
+    end
+
+    # Returns unique prices across all variants as an Array of Strings.
+    #
+    # Unlike {#price} (lowest single price) or {#price_range} (formatted string),
+    # this returns the raw deduplicated list useful for custom rendering.
+    #
+    # @return [Array<String>]
+    def prices
+      variants.map do |variant|
+        variant['price']
+      end.uniq
+    end
+
+    # Returns the image whose +position+ field equals 1, or nil if none match.
+    #
+    # Unlike {#featured_image} (which returns +images.first+ regardless of
+    # position), this explicitly matches on the +position+ attribute.
+    #
+    # @return [ProductImage, nil]
+    def main_image
+      images.find do |img|
+        img['position'] == 1
+      end
+    end
   end
 end

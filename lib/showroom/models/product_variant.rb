@@ -8,7 +8,7 @@ module Showroom
   #   variant.available? # => true
   #   variant.on_sale?   # => false
   class ProductVariant < Resource
-    main_attrs :id, :title, :price, :sku
+    main_attrs :id, :title, :price, :compare_at_price, :sku
 
     # Returns true when the variant is available for purchase.
     #

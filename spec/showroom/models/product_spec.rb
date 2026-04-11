@@ -99,6 +99,62 @@ RSpec.describe Showroom::Product do
     end
   end
 
+  describe '#url' do
+    let(:product) { described_class.new(JSON.parse(products_body)['products'][0]) }
+
+    it 'returns the storefront URL for the product' do
+      expect(product.url).to eq('https://example.myshopify.com/products/lorem-road-bike')
+    end
+  end
+
+  describe '#prices' do
+    context 'with multiple distinct variant prices (Lorem Road Bike)' do
+      let(:product) { described_class.new(JSON.parse(products_body)['products'][0]) }
+
+      it 'returns a unique array of prices' do
+        expect(product.prices).to contain_exactly('899.00', '749.00')
+      end
+    end
+
+    context 'with a single price (Ipsum City Cruiser)' do
+      let(:product) { described_class.new(JSON.parse(products_body)['products'][1]) }
+
+      it 'returns a single-element array' do
+        expect(product.prices).to eq(['499.00'])
+      end
+    end
+
+    context 'with no variants' do
+      let(:product) { described_class.new('variants' => []) }
+
+      it 'returns an empty array' do
+        expect(product.prices).to eq([])
+      end
+    end
+  end
+
+  describe '#main_image' do
+    context 'when images include one with position 1' do
+      let(:product) { described_class.new(JSON.parse(products_body)['products'][0]) }
+
+      it 'returns a ProductImage instance' do
+        expect(product.main_image).to be_a(Showroom::ProductImage)
+      end
+
+      it 'returns the image with position 1' do
+        expect(product.main_image.position).to eq(1)
+      end
+    end
+
+    context 'when there are no images' do
+      let(:product) { described_class.new('images' => []) }
+
+      it 'returns nil' do
+        expect(product.main_image).to be_nil
+      end
+    end
+  end
+
   describe '#featured_image' do
     context 'when images are present' do
       let(:product) { described_class.new(JSON.parse(products_body)['products'][0]) }
