@@ -205,15 +205,19 @@ RSpec.describe Showroom::Product do
     end
 
     it 'returns an Enumerator' do
-      expect(described_class.all).to be_a(Enumerator)
+      expect(described_class.all(max_pages: 2)).to be_a(Enumerator)
     end
 
     it 'yields the correct number of products across pages' do
-      expect(described_class.all.to_a.length).to eq(2)
+      expect(described_class.all(max_pages: 2).to_a.length).to eq(2)
     end
 
     it 'yields Product instances' do
-      expect(described_class.all.to_a).to all(be_a(described_class))
+      expect(described_class.all(max_pages: 2).to_a).to all(be_a(described_class))
+    end
+
+    it 'raises ArgumentError without max_pages: or force_all_without_limit:' do
+      expect { described_class.all.to_a }.to raise_error(ArgumentError, /max_pages/)
     end
   end
 
@@ -228,22 +232,32 @@ RSpec.describe Showroom::Product do
         .to_return(status: 200, body: products_empty_body, headers: { 'Content-Type' => 'application/json' })
     end
 
+    it 'raises ArgumentError without max_pages: or force_all_without_limit:' do
+      expect { described_class.each_page { |_p, _n| nil } }.to raise_error(ArgumentError, /max_pages/)
+    end
+
     it 'yields one page of results' do
       pages = []
-      described_class.each_page { |products, page| pages << [products, page] }
+      described_class.each_page(max_pages: 2) { |products, page| pages << [products, page] }
       expect(pages.length).to eq(1)
     end
 
     it 'yields the correct page number' do
       pages = []
-      described_class.each_page { |products, page| pages << [products, page] }
+      described_class.each_page(max_pages: 2) { |products, page| pages << [products, page] }
       expect(pages[0][1]).to eq(1)
     end
 
     it 'yields Product instances' do
       pages = []
-      described_class.each_page { |products, page| pages << [products, page] }
+      described_class.each_page(max_pages: 2) { |products, page| pages << [products, page] }
       expect(pages[0][0]).to all(be_a(described_class))
+    end
+
+    it 'emits a warning with force_all_without_limit: true' do
+      expect do
+        described_class.each_page(force_all_without_limit: true) { |_p, _n| nil }
+      end.to output(/unbounded/).to_stderr
     end
   end
 

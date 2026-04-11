@@ -42,10 +42,10 @@ module Showroom
       # @yieldparam items [Array] the deserialized items for this page
       # @yieldparam page [Integer] 1-based page number
       # @return [void]
-      def paginate(path, key, params = {}, &blk)
+      def paginate(path, key, params = {}, max_pages: pagination_depth, &blk)
         page_limit = per_page
 
-        (1..pagination_depth).each do |page|
+        (1..max_pages).each do |page|
           paged_params = params.merge(limit: page_limit, page: page)
           body         = get(path, paged_params)
           items        = body.is_a?(Hash) ? body[key] || body[key.to_s] : body

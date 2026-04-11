@@ -36,13 +36,23 @@ module Showroom
                 .then { |h| new(h) }
       end
 
-      # Returns an Enumerator that lazily iterates over all products across pages.
+      # Returns an Enumerator that iterates over products across multiple pages.
       #
+      # You must pass either +max_pages:+ (an explicit ceiling) or set
+      # +force_all_without_limit: true+ to acknowledge that the number of
+      # requests is unbounded. The latter emits a warning.
+      #
+      # @param max_pages [Integer, nil] maximum number of pages to fetch
+      # @param force_all_without_limit [Boolean] when true, fetch all pages
+      #   up to +pagination_depth+ without a hard cap (emits a warning)
       # @param params [Hash] additional query parameters
       # @return [Enumerator<Product>]
-      def all(**params)
+      # @raise [ArgumentError] when neither +max_pages:+ nor
+      #   +force_all_without_limit: true+ is given
+      def all(max_pages: nil, force_all_without_limit: false, **params)
         Enumerator.new do |yielder|
-          each_page(**params) do |page_products, _page|
+          each_page(max_pages: max_pages, force_all_without_limit: force_all_without_limit,
+                    **params) do |page_products, _page|
             page_products.each { |p| yielder << p }
           end
         end
@@ -50,16 +60,44 @@ module Showroom
 
       # Iterates through pages of products, yielding each page.
       #
+      # You must pass either +max_pages:+ or +force_all_without_limit: true+.
+      # Without an explicit ceiling, unbounded pagination can issue dozens of
+      # HTTP requests silently. When +force_all_without_limit: true+ is given,
+      # a warning is emitted and iteration proceeds up to +pagination_depth+.
+      #
+      # @param max_pages [Integer, nil] maximum number of pages to fetch
+      # @param force_all_without_limit [Boolean] bypass the requirement at your
+      #   own risk; emits a +Kernel.warn+ and uses +pagination_depth+ as the cap
       # @param limit [Integer] results per page (defaults to +Showroom.per_page+)
       # @param params [Hash] additional query parameters
-      # @yield [products, page] the array of products for the page and the 1-based page number
+      # @yield [products, page] the products for this page and the 1-based page number
       # @yieldparam products [Array<Product>]
       # @yieldparam page [Integer]
       # @return [void]
-      def each_page(limit: Showroom.per_page, **params, &blk)
-        Showroom.client.paginate('/products.json', 'products', params.merge(limit: limit)) do |items, page|
+      # @raise [ArgumentError] when neither +max_pages:+ nor
+      #   +force_all_without_limit: true+ is given
+      def each_page(max_pages: nil, force_all_without_limit: false, limit: Showroom.per_page, **params, &blk)
+        validate_pagination_args!(max_pages, force_all_without_limit)
+        effective_depth = max_pages || Showroom.client.pagination_depth
+        Showroom.client.paginate('/products.json', 'products', params.merge(limit: limit),
+                                 max_pages: effective_depth) do |items, page|
           blk.call(items.map { |h| new(h) }, page)
         end
+      end
+
+      private
+
+      def validate_pagination_args!(max_pages, force_all_without_limit)
+        if max_pages.nil? && !force_all_without_limit
+          raise ArgumentError,
+                'Product.each_page requires max_pages: N or force_all_without_limit: true. ' \
+                'Unbounded pagination can issue many HTTP requests. ' \
+                'Pass max_pages: to set an explicit ceiling.'
+        end
+        return unless force_all_without_limit && max_pages.nil?
+
+        warn '[Showroom] force_all_without_limit: true — pagination is unbounded and may issue ' \
+             "up to #{Showroom.client.pagination_depth} HTTP requests."
       end
     end
 
