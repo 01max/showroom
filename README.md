@@ -145,6 +145,7 @@ end
 - **Rate limits** — Shopify's public endpoints allow roughly 2 req/s per IP. Showroom raises `TooManyRequests` (429) but does not retry automatically. Add your own back-off logic.
 - **`/products.json` may be disabled** on some stores. You'll receive a `NotFound` or `ServerError`.
 - **User-Agent** — some stores block the default Faraday UA. Showroom sets its own identifying header by default; override via `c.user_agent` if needed.
+- **Search result ordering is not stable** — `/search/suggest.json` does not guarantee a consistent order across requests. Results with equal relevance scores may alternate non-deterministically. Do not rely on `result.products.first` being the same between calls.
 
 ## License
 
