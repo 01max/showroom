@@ -92,4 +92,13 @@ module Showroom
   def self.collection(handle)
     Collection.find(handle)
   end
+
+  # Calls the Shopify search suggest endpoint and returns a {Search::Result}.
+  #
+  # @param query_str [String] the search query
+  # @param params [Hash] keyword arguments forwarded to {Search.suggest}
+  # @return [Search::Result]
+  def self.search(query_str, **)
+    Search.suggest(query_str, **)
+  end
 end

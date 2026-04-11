@@ -76,5 +76,20 @@ module Showroom
         .fetch('collection') { raise Showroom::NotFound, handle }
         .then { |h| Collection.new(h) }
     end
+
+    # Calls the Shopify search suggest endpoint and returns a {Search::Result}.
+    #
+    # @param query_str [String] the search query
+    # @param types [Array<Symbol>] resource types to search (e.g. +:product+, +:collection+)
+    # @param limit [Integer] maximum results per type (defaults to {#per_page})
+    # @param params [Hash] additional query parameters forwarded to the API
+    # @return [Search::Result]
+    def search(query_str, types: %i[product collection], limit: per_page, **params)
+      query = { q: query_str, 'resources[limit]' => limit }
+      query['resources[type]'] = types.join(',') unless types.empty?
+      query.merge!(params)
+      raw = get('/search/suggest.json', query)
+      Search::Result.new(raw.dig('resources', 'results') || {})
+    end
   end
 end
