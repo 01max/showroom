@@ -4,6 +4,6 @@ module Showroom
   # Internal gem infrastructure (configuration, connection, errors, versioning).
   module Core
     # Current gem version.
-    VERSION = '0.1.0-alpha'
+    VERSION = '0.1.0'
   end
 end
