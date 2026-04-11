@@ -24,8 +24,8 @@ module Showroom
       #
       # @param params [Hash] Shopify query parameters
       # @return [Array<Collection>]
-      def where(**params)
-        Showroom.client.get('/collections.json', params)
+      def where(limit: Showroom.per_page, **params)
+        Showroom.client.get('/collections.json', params.merge(limit: limit))
                 .fetch('collections', [])
                 .map { |h| new(h) }
       end

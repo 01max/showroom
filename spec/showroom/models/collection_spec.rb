@@ -23,6 +23,7 @@ RSpec.describe Showroom::Collection do
   describe '.where' do
     before do
       stub_request(:get, "#{base_url}/collections.json")
+        .with(query: hash_including({}))
         .to_return(status: 200, body: collections_body, headers: { 'Content-Type' => 'application/json' })
     end
 
@@ -44,7 +45,7 @@ RSpec.describe Showroom::Collection do
 
     it 'passes params as query parameters' do
       stub_request(:get, "#{base_url}/collections.json")
-        .with(query: { 'title' => 'Lorem Helmets' })
+        .with(query: hash_including('title' => 'Lorem Helmets'))
         .to_return(status: 200, body: collections_body, headers: { 'Content-Type' => 'application/json' })
 
       result = described_class.where(title: 'Lorem Helmets')
@@ -54,6 +55,7 @@ RSpec.describe Showroom::Collection do
     context 'when the response has no collections' do
       before do
         stub_request(:get, "#{base_url}/collections.json")
+          .with(query: hash_including({}))
           .to_return(status: 200, body: '{"collections":[]}',
                      headers: { 'Content-Type' => 'application/json' })
       end
@@ -71,6 +73,7 @@ RSpec.describe Showroom::Collection do
     context 'when the collection exists' do
       before do
         stub_request(:get, "#{base_url}/collections/lorem-helmets.json")
+          .with(query: hash_including({}))
           .to_return(status: 200, body: collection_body, headers: { 'Content-Type' => 'application/json' })
       end
 
@@ -94,6 +97,7 @@ RSpec.describe Showroom::Collection do
     context 'when the collection is not found (404)' do
       before do
         stub_request(:get, "#{base_url}/collections/nonexistent.json")
+          .with(query: hash_including({}))
           .to_return(status: 404, body: '{"errors":"Not Found"}',
                      headers: { 'Content-Type' => 'application/json' })
       end
@@ -112,6 +116,7 @@ RSpec.describe Showroom::Collection do
 
     before do
       stub_request(:get, "#{base_url}/collections/lorem-helmets/products.json")
+        .with(query: hash_including({}))
         .to_return(status: 200, body: collection_products_body,
                    headers: { 'Content-Type' => 'application/json' })
     end
@@ -153,6 +158,7 @@ RSpec.describe Showroom::Collection do
   describe 'Showroom.collections' do
     before do
       stub_request(:get, "#{base_url}/collections.json")
+        .with(query: hash_including({}))
         .to_return(status: 200, body: collections_body, headers: { 'Content-Type' => 'application/json' })
     end
 
@@ -164,6 +170,7 @@ RSpec.describe Showroom::Collection do
   describe 'Showroom.collection' do
     before do
       stub_request(:get, "#{base_url}/collections/lorem-helmets.json")
+        .with(query: hash_including({}))
         .to_return(status: 200, body: collection_body, headers: { 'Content-Type' => 'application/json' })
     end
 
@@ -178,6 +185,7 @@ RSpec.describe Showroom::Collection do
   describe 'client#collections' do
     before do
       stub_request(:get, "#{base_url}/collections.json")
+        .with(query: hash_including({}))
         .to_return(status: 200, body: collections_body, headers: { 'Content-Type' => 'application/json' })
     end
 
@@ -189,6 +197,7 @@ RSpec.describe Showroom::Collection do
   describe 'client#collection' do
     before do
       stub_request(:get, "#{base_url}/collections/lorem-helmets.json")
+        .with(query: hash_including({}))
         .to_return(status: 200, body: collection_body, headers: { 'Content-Type' => 'application/json' })
     end
 

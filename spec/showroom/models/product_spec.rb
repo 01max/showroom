@@ -127,6 +127,7 @@ RSpec.describe Showroom::Product do
   describe '.where' do
     before do
       stub_request(:get, "#{base_url}/products.json")
+        .with(query: hash_including({}))
         .to_return(status: 200, body: products_body, headers: { 'Content-Type' => 'application/json' })
     end
 
@@ -141,7 +142,7 @@ RSpec.describe Showroom::Product do
 
     it 'passes params as query parameters' do
       stub_request(:get, "#{base_url}/products.json")
-        .with(query: { 'product_type' => 'Road Bike' })
+        .with(query: hash_including('product_type' => 'Road Bike'))
         .to_return(status: 200, body: products_body, headers: { 'Content-Type' => 'application/json' })
 
       result = described_class.where(product_type: 'Road Bike')
@@ -151,6 +152,7 @@ RSpec.describe Showroom::Product do
     context 'when the response has no products' do
       before do
         stub_request(:get, "#{base_url}/products.json")
+          .with(query: hash_including({}))
           .to_return(status: 200, body: products_empty_body, headers: { 'Content-Type' => 'application/json' })
       end
 
@@ -164,6 +166,7 @@ RSpec.describe Showroom::Product do
     context 'when the product exists' do
       before do
         stub_request(:get, "#{base_url}/products/lorem-road-bike.json")
+          .with(query: hash_including({}))
           .to_return(status: 200, body: product_body, headers: { 'Content-Type' => 'application/json' })
       end
 
@@ -184,6 +187,7 @@ RSpec.describe Showroom::Product do
     context 'when the product is not found (404)' do
       before do
         stub_request(:get, "#{base_url}/products/nonexistent.json")
+          .with(query: hash_including({}))
           .to_return(status: 404, body: '{"errors":"Not Found"}', headers: { 'Content-Type' => 'application/json' })
       end
 
@@ -267,6 +271,7 @@ RSpec.describe Showroom::Product do
   describe 'Showroom.products' do
     before do
       stub_request(:get, "#{base_url}/products.json")
+        .with(query: hash_including({}))
         .to_return(status: 200, body: products_body, headers: { 'Content-Type' => 'application/json' })
     end
 
@@ -278,6 +283,7 @@ RSpec.describe Showroom::Product do
   describe 'Showroom.product' do
     before do
       stub_request(:get, "#{base_url}/products/lorem-road-bike.json")
+        .with(query: hash_including({}))
         .to_return(status: 200, body: product_body, headers: { 'Content-Type' => 'application/json' })
     end
 
@@ -292,6 +298,7 @@ RSpec.describe Showroom::Product do
   describe 'client#products' do
     before do
       stub_request(:get, "#{base_url}/products.json")
+        .with(query: hash_including({}))
         .to_return(status: 200, body: products_body, headers: { 'Content-Type' => 'application/json' })
     end
 
@@ -303,6 +310,7 @@ RSpec.describe Showroom::Product do
   describe 'client#product' do
     before do
       stub_request(:get, "#{base_url}/products/lorem-road-bike.json")
+        .with(query: hash_including({}))
         .to_return(status: 200, body: product_body, headers: { 'Content-Type' => 'application/json' })
     end
 

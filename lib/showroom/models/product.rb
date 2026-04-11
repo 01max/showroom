@@ -25,8 +25,8 @@ module Showroom
       #
       # @param params [Hash] Shopify query parameters (e.g. product_type:, vendor:)
       # @return [Array<Product>]
-      def where(**params)
-        Showroom.client.get('/products.json', params)
+      def where(limit: Showroom.per_page, **params)
+        Showroom.client.get('/products.json', params.merge(limit: limit))
                 .fetch('products', [])
                 .map { |h| new(h) }
       end

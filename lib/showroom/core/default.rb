@@ -23,7 +23,7 @@ module Showroom
 
       # @return [Integer] number of results per page, clamped to MAX_PER_PAGE
       def self.per_page
-        raw = ENV.fetch('SHOWROOM_PER_PAGE', 50).to_i
+        raw = ENV.fetch('SHOWROOM_PER_PAGE', MAX_PER_PAGE).to_i
         [raw, MAX_PER_PAGE].min
       end
 
