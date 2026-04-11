@@ -94,6 +94,54 @@ Showroom.products(limit: 5)      # => Array<Product>
 Showroom.product('lorem-road-bike') # => Product
 ```
 
+## Search
+
+Showroom wraps Shopify's `/search/suggest.json` endpoint via `Showroom.search`.
+
+```ruby
+result = Showroom.search('road bike', types: [:product, :collection], limit: 5)
+```
+
+### Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `q` (first arg) | String | — | Search query |
+| `types:` | Array\<Symbol\> | `[:product, :collection]` | Resource types to include |
+| `limit:` | Integer | `per_page` config | Max results per type |
+
+Available `types:` values: `:product`, `:collection`, `:page`, `:article`, `:query`.
+
+### Accessing results
+
+```ruby
+result = Showroom.search('lorem', types: [:product, :collection, :page, :article, :query])
+
+result.products     # => Array<Search::ProductSuggestion>
+result.collections  # => Array<Search::CollectionSuggestion>
+result.pages        # => Array<Search::PageSuggestion>
+result.articles     # => Array<Search::ArticleSuggestion>
+result.queries      # => Array<Search::QuerySuggestion>
+
+result.products.first.title  # => "Lorem Road Bike"
+result.queries.first.text    # => "lorem road bike"
+```
+
+### Loading full models
+
+Product and collection suggestions expose a `#load` method that fetches the complete model record:
+
+```ruby
+suggestion = result.products.first
+product = suggestion.load  # => Showroom::Product (full record, makes one HTTP request)
+
+suggestion = result.collections.first
+collection = suggestion.load  # => Showroom::Collection
+
+# Page, article, and query suggestions do not support #load
+result.pages.first.load  # => NoMethodError
+```
+
 ## Error handling
 
 ```ruby
