@@ -16,28 +16,42 @@ module Showroom
     #   Product.calculate_count    # => 2847  (O(log n) requests)
     #   Collection.calculate_count # => 42
     module Countable
-      MAX_PER_PAGE = 250
+      MAX_PER_PAGE  = 250
+      MAX_PAGE      = 100
+      MAX_COUNT     = MAX_PER_PAGE * MAX_PAGE # 25_000
 
       # Estimates the total number of items via binary search over pages.
       #
+      # Shopify's public endpoints reject page numbers above 100, so the
+      # maximum reportable count is **25,000** (100 pages × 250 per page).
+      # Stores with more items will return 25,000. Any +limit:+ key in
+      # +params+ is ignored — the probe always uses +MAX_PER_PAGE+ (250).
+      #
       # @param params [Hash] additional query parameters forwarded to the
-      #   index endpoint (e.g. +product_type:+, +vendor:+)
-      # @return [Integer] approximate total item count
+      #   index endpoint (e.g. +product_type:+, +vendor:+). +limit:+ is ignored.
+      # @return [Integer] approximate total item count, capped at 25,000
       def calculate_count(**params)
-        fetch = ->(page) { page_size(page, **params) }
+        fetch = ->(page) { page_size(page, **params.except(:limit)) }
         upper = probe_upper_bound(fetch)
         return 0 if upper == 1 && fetch.call(1).zero?
 
-        upper = binary_search(fetch, upper / 2, upper)
-        last_size = upper[:upper_size] || fetch.call(upper[:upper])
-        (upper[:lower] * MAX_PER_PAGE) + last_size
+        tally(fetch, upper)
       end
 
       private
 
+      def tally(fetch, upper)
+        result = binary_search(fetch, upper / 2, upper)
+        total  = (result[:lower] * MAX_PER_PAGE) + (result[:upper_size] || fetch.call(result[:upper]))
+        if total >= MAX_COUNT
+          warn "[Showroom] calculate_count hit the #{MAX_COUNT} item ceiling — the store likely has more."
+        end
+        total
+      end
+
       def probe_upper_bound(fetch)
         upper = 1
-        upper *= 2 while fetch.call(upper) == MAX_PER_PAGE
+        upper = [upper * 2, MAX_PAGE].min while fetch.call(upper) == MAX_PER_PAGE && upper < MAX_PAGE
         upper
       end
 
