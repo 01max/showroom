@@ -78,7 +78,7 @@ RSpec.describe Showroom::Product do
       let(:product) { described_class.new(JSON.parse(products_body)['products'][0]) }
 
       it 'returns a min–max string' do
-        expect(product.price_range).to eq('749.00–899.00')
+        expect(product.price_range).to eq('749.00 - 899.00')
       end
     end
 

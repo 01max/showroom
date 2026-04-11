@@ -8,13 +8,19 @@ module Showroom
   #   products = Showroom::Product.where(product_type: 'Road Bike')
   #   product  = Showroom::Product.find('lorem-road-bike')
   class Product < Resource
-    main_attrs :id, :title, :handle, :vendor, :product_type
+    main_attrs :id, :title, :handle, :vendor, :product_type, :price, :price_range
 
     has_many :variants, ProductVariant
     has_many :images,   ProductImage
     has_many :options,  ProductOption
 
     class << self
+      include Core::Countable
+
+      def index_path = '/products.json'
+      def index_key  = 'products'
+      private :index_path, :index_key
+
       # Fetches products matching the given query parameters.
       #
       # @param params [Hash] Shopify query parameters (e.g. product_type:, vendor:)
@@ -116,7 +122,7 @@ module Showroom
       prices = variants.map { |v| v['price'] }.uniq
       return nil if prices.empty?
 
-      prices.length == 1 ? prices.first : "#{prices.min}–#{prices.max}"
+      prices.length == 1 ? prices.first : "#{prices.min} - #{prices.max}"
     end
 
     # Returns true when at least one variant is available for purchase.

@@ -24,6 +24,7 @@ module Showroom
         timeout
         middleware
         connection_options
+        debug
       ].freeze
 
       # @!method store

@@ -11,9 +11,15 @@ module Showroom
   # @example Fetching products in a collection
   #   collection.products(limit: 10)
   class Collection < Resource
-    main_attrs :id, :title, :handle
+    main_attrs :id, :title, :handle, :products_count
 
     class << self
+      include Core::Countable
+
+      def index_path = '/collections.json'
+      def index_key  = 'collections'
+      private :index_path, :index_key
+
       # Fetches collections matching the given query parameters.
       #
       # @param params [Hash] Shopify query parameters
@@ -34,6 +40,13 @@ module Showroom
                 .fetch('collection') { raise Showroom::NotFound, handle }
                 .then { |h| new(h) }
       end
+    end
+
+    # Returns the number of products in this collection as reported by the API.
+    #
+    # @return [Integer, nil]
+    def products_count
+      @attrs['products_count']
     end
 
     # Fetches a single page of products belonging to this collection.

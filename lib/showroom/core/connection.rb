@@ -26,6 +26,7 @@ module Showroom
       # @param params [Hash] query parameters
       # @return [Object] parsed JSON body (Hash or Array)
       def get(path, params = {})
+        puts "GET #{path} with params #{params}" if Showroom.debug
         @last_response = agent.get(path, params)
         @last_response.body
       end

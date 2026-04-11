@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'core/countable'
 require_relative 'models/resource'
 
 require_relative 'models/product_image'

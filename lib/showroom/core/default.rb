@@ -51,6 +51,11 @@ module Showroom
       def self.connection_options
         {}
       end
+
+      # @return [Boolean] whether to print debug output for each request
+      def self.debug # rubocop:disable Naming/PredicateMethod
+        ENV.fetch('SHOWROOM_DEBUG', nil) == '1'
+      end
     end
   end
 end
