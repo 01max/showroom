@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.license     = 'GPL-3.0-or-later'
 
   spec.homepage              = 'https://github.com/01max/showroom'
-  spec.required_ruby_version = '>= 3.2'
+  spec.required_ruby_version = '>= 3.3'
 
   spec.metadata['rubygems_mfa_required'] = 'true'
   spec.metadata['homepage_uri']          = spec.homepage
