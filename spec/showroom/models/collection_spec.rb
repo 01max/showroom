@@ -176,14 +176,13 @@ RSpec.describe Showroom::Collection do
   # #products — client awareness
   # -----------------------------------------------------------------------
   describe '#products (client awareness)' do
-    let(:other_base_url) { 'https://other-store.myshopify.com' }
-    let(:client) { Showroom::Client.new(store: 'other-store.myshopify.com') }
     let(:collection) do
+      client = Showroom::Client.new(store: 'other-store.myshopify.com')
       described_class.new(JSON.parse(collection_body)['collection']).tap { |c| c.client = client }
     end
 
     before do
-      stub_request(:get, "#{other_base_url}/collections/lorem-helmets/products.json")
+      stub_request(:get, 'https://other-store.myshopify.com/collections/lorem-helmets/products.json')
         .with(query: hash_including({}))
         .to_return(status: 200, body: collection_products_body,
                    headers: { 'Content-Type' => 'application/json' })
@@ -196,7 +195,7 @@ RSpec.describe Showroom::Collection do
 
     it 'propagates the client to returned products' do
       products = collection.products
-      expect(products.first.client).to eq(client)
+      expect(products.first.client).to eq(collection.client)
     end
   end
 

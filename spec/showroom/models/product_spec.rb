@@ -107,10 +107,8 @@ RSpec.describe Showroom::Product do
     end
 
     context 'when fetched via a specific client' do
-      let(:client) { Showroom::Client.new(store: 'other-store.myshopify.com') }
-
       it 'uses the instance client base_url' do
-        product.client = client
+        product.client = Showroom::Client.new(store: 'other-store.myshopify.com')
         expect(product.url).to eq('https://other-store.myshopify.com/products/lorem-road-bike')
       end
     end
