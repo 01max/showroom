@@ -44,7 +44,7 @@ module Showroom
     # @param params [Hash] Shopify query parameters
     # @return [Array<Product>]
     def products(**params)
-      get('/products.json', params).fetch('products', []).map { |h| Product.new(h) }
+      get('/products.json', params).fetch('products', []).map { |h| Product.new(h).tap { |r| r.client = self } }
     end
 
     # Fetches a single product by handle.
@@ -55,7 +55,7 @@ module Showroom
     def product(handle)
       get("/products/#{handle}.json")
         .fetch('product') { raise Showroom::NotFound, handle }
-        .then { |h| Product.new(h) }
+        .then { |h| Product.new(h).tap { |r| r.client = self } }
     end
 
     # Fetches collections from the store.
@@ -63,7 +63,11 @@ module Showroom
     # @param params [Hash] Shopify query parameters
     # @return [Array<Collection>]
     def collections(**params)
-      get('/collections.json', params).fetch('collections', []).map { |h| Collection.new(h) }
+      get('/collections.json', params).fetch('collections', []).map do |h|
+        Collection.new(h).tap do |r|
+          r.client = self
+        end
+      end
     end
 
     # Fetches a single collection by handle.
@@ -74,7 +78,7 @@ module Showroom
     def collection(handle)
       get("/collections/#{handle}.json")
         .fetch('collection') { raise Showroom::NotFound, handle }
-        .then { |h| Collection.new(h) }
+        .then { |h| Collection.new(h).tap { |r| r.client = self } }
     end
 
     # Calls the Shopify search suggest endpoint and returns a {Search::Result}.

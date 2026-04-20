@@ -153,6 +153,54 @@ RSpec.describe Showroom::Collection do
   end
 
   # -----------------------------------------------------------------------
+  # #url
+  # -----------------------------------------------------------------------
+  describe '#url' do
+    subject(:collection) { described_class.new(JSON.parse(collection_body)['collection']) }
+
+    it 'returns the storefront URL for the collection' do
+      expect(collection.url).to eq('https://example.myshopify.com/collections/lorem-helmets')
+    end
+
+    context 'when fetched via a specific client' do
+      let(:client) { Showroom::Client.new(store: 'other-store.myshopify.com') }
+
+      it 'uses the instance client base_url' do
+        collection.client = client
+        expect(collection.url).to eq('https://other-store.myshopify.com/collections/lorem-helmets')
+      end
+    end
+  end
+
+  # -----------------------------------------------------------------------
+  # #products — client awareness
+  # -----------------------------------------------------------------------
+  describe '#products (client awareness)' do
+    let(:other_base_url) { 'https://other-store.myshopify.com' }
+    let(:client) { Showroom::Client.new(store: 'other-store.myshopify.com') }
+    let(:collection) do
+      described_class.new(JSON.parse(collection_body)['collection']).tap { |c| c.client = client }
+    end
+
+    before do
+      stub_request(:get, "#{other_base_url}/collections/lorem-helmets/products.json")
+        .with(query: hash_including({}))
+        .to_return(status: 200, body: collection_products_body,
+                   headers: { 'Content-Type' => 'application/json' })
+    end
+
+    it 'uses the instance client instead of the global client' do
+      products = collection.products
+      expect(products).to all(be_a(Showroom::Product))
+    end
+
+    it 'propagates the client to returned products' do
+      products = collection.products
+      expect(products.first.client).to eq(client)
+    end
+  end
+
+  # -----------------------------------------------------------------------
   # Module-level delegators
   # -----------------------------------------------------------------------
   describe 'Showroom.collections' do

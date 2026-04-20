@@ -40,6 +40,42 @@ RSpec.describe Showroom::Client do
     end
   end
 
+  describe 'client propagation' do
+    subject(:client) { described_class.new(store: 'example.myshopify.com') }
+
+    it 'sets client on products returned by #products' do
+      stub_request(:get, %r{example\.myshopify\.com/products\.json})
+        .to_return(status: 200, body: '{"products":[{"id":1,"handle":"a"}]}',
+                   headers: { 'Content-Type' => 'application/json' })
+
+      expect(client.products.first.client).to eq(client)
+    end
+
+    it 'sets client on product returned by #product' do
+      stub_request(:get, %r{example\.myshopify\.com/products/a\.json})
+        .to_return(status: 200, body: '{"product":{"id":1,"handle":"a"}}',
+                   headers: { 'Content-Type' => 'application/json' })
+
+      expect(client.product('a').client).to eq(client)
+    end
+
+    it 'sets client on collections returned by #collections' do
+      stub_request(:get, %r{example\.myshopify\.com/collections\.json})
+        .to_return(status: 200, body: '{"collections":[{"id":1,"handle":"b"}]}',
+                   headers: { 'Content-Type' => 'application/json' })
+
+      expect(client.collections.first.client).to eq(client)
+    end
+
+    it 'sets client on collection returned by #collection' do
+      stub_request(:get, %r{example\.myshopify\.com/collections/b\.json})
+        .to_return(status: 200, body: '{"collection":{"id":1,"handle":"b"}}',
+                   headers: { 'Content-Type' => 'application/json' })
+
+      expect(client.collection('b').client).to eq(client)
+    end
+  end
+
   describe 'connection delegation' do
     subject(:client) { described_class.new(store: 'example.myshopify.com') }
 

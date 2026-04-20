@@ -15,6 +15,9 @@ module Showroom
     # @return [Hash] the normalized attribute hash
     attr_reader :attrs
 
+    # @return [Showroom::Client, nil] the client that fetched this resource
+    attr_accessor :client
+
     # Initializes a Resource from a Hash, normalizing all keys to strings.
     #
     # @param hash [Hash] attribute data

@@ -143,7 +143,8 @@ module Showroom
     #
     # @return [String]
     def url
-      "#{Showroom.client.base_url}/products/#{handle}"
+      conn = client || Showroom.client
+      "#{conn.base_url}/products/#{handle}"
     end
 
     # Returns unique prices across all variants as an Array of Strings.

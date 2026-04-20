@@ -59,9 +59,18 @@ module Showroom
     # @param params [Hash] Shopify query parameters (e.g. +limit:+, +page:+)
     # @return [Array<Product>]
     def products(**params)
-      Showroom.client.get("/collections/#{handle}/products.json", params)
-              .fetch('products', [])
-              .map { |h| Product.new(h) }
+      conn = client || Showroom.client
+      conn.get("/collections/#{handle}/products.json", params)
+          .fetch('products', [])
+          .map { |h| Product.new(h).tap { |r| r.client = conn } }
+    end
+
+    # Returns the canonical storefront URL for this collection.
+    #
+    # @return [String]
+    def url
+      conn = client || Showroom.client
+      "#{conn.base_url}/collections/#{handle}"
     end
   end
 end
