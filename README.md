@@ -55,6 +55,13 @@ globo    = Showroom::Client.new(store: 'globo.myshopify.com')
 
 acme.products(limit: 5).map(&:title)
 globo.product('road-bike').price
+
+# Models remember which client fetched them
+product = acme.product('lorem-road-bike')
+product.url  # => "https://acme.myshopify.com/products/lorem-road-bike"
+
+# base_url is available on any client
+acme.base_url  # => "https://acme.myshopify.com"
 ```
 
 ## Products
@@ -95,6 +102,30 @@ end
 ```ruby
 Showroom.products(limit: 5)      # => Array<Product>
 Showroom.product('lorem-road-bike') # => Product
+```
+
+## Collections
+
+```ruby
+# List
+Showroom::Collection.where(limit: 10)
+
+# Single
+collection = Showroom::Collection.find('lorem-helmets')
+collection.title          # => "Lorem Helmets"
+collection.handle         # => "lorem-helmets"
+collection.products_count # => 12
+collection.url            # => "https://acme.myshopify.com/collections/lorem-helmets"
+
+# Products in a collection
+collection.products(limit: 5).each { |p| puts p.title }
+```
+
+### Module-level shortcuts
+
+```ruby
+Showroom.collections(limit: 5)          # => Array<Collection>
+Showroom.collection('lorem-helmets')    # => Collection
 ```
 
 ## Search

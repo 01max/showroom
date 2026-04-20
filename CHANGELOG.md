@@ -7,6 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-04-20
+
+### Added
+
+- `Product#url` — returns the canonical storefront URL for a product (`/products/:handle`)
+- `Product#prices` — deduplicated list of raw price strings across all variants
+- `Product#main_image` — returns the image with `position: 1`, distinct from `featured_image` (which returns `images.first`)
+- `Collection#url` — returns the canonical storefront URL for a collection (`/collections/:handle`)
+- `Client#base_url` — exposes the resolved HTTPS base URL for the configured store
+- `Resource#client` accessor — models now carry a reference to the client that fetched them
+- Ruby 4.0 added to CI matrix
+- Dependabot configuration for automated dependency updates
+
+### Changed
+
+- All models returned by `Client` methods (`products`, `product`, `collections`, `collection`) now have their `client` attribute set automatically, enabling instance-scoped operations without relying on the global `Showroom.client`
+- `Collection#products` uses the instance client when available, falling back to the global client
+
 ## [0.1.0] - 2026-04-11
 
 ### Added
