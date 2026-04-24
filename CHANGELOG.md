@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Product#similar` — searches for products similar to the current one via the search suggest endpoint; strips variant SKU fragments from the handle before querying, and falls back to a title search when the stripped-handle query returns no results
+- `Search::Result#products` now accepts an `order:` keyword (`:id`, `:title`, `:handle`, or `:price`) to sort suggestions client-side; defaults to API response order when omitted
+
+### Fixed
+
+- Rakefile: corrected gem-build task so `rake build` works correctly
+
 ## [0.2.0] - 2026-04-20
 
 ### Added

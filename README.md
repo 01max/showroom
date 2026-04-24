@@ -83,6 +83,11 @@ product.url            # => "https://acme.myshopify.com/products/lorem-road-bike
 product.featured_image # => #<Showroom::ProductImage ...>  (first image)
 product.main_image     # => #<Showroom::ProductImage ...>  (image with position 1)
 
+# Similar products — searches by handle (SKU fragments stripped), falls back to title
+product.similar                          # => Array<Search::ProductSuggestion>, sorted by price
+product.similar(limit: 3)               # forward any Client#search keyword
+product.similar.first.load              # => Showroom::Product (full record)
+
 # Variants
 product.variants.each do |v|
   puts "#{v.title}  #{v.price}  #{v.compare_at_price}  on_sale=#{v.on_sale?}  available=#{v.available?}"
@@ -151,7 +156,7 @@ Available `types:` values: `:product`, `:collection`, `:page`, `:article`, `:que
 ```ruby
 result = Showroom.search('lorem', types: [:product, :collection, :page, :article, :query])
 
-result.products     # => Array<Search::ProductSuggestion>
+result.products     # => Array<Search::ProductSuggestion>  (API order)
 result.collections  # => Array<Search::CollectionSuggestion>
 result.pages        # => Array<Search::PageSuggestion>
 result.articles     # => Array<Search::ArticleSuggestion>
@@ -159,6 +164,13 @@ result.queries      # => Array<Search::QuerySuggestion>
 
 result.products.first.title  # => "Lorem Road Bike"
 result.queries.first.text    # => "lorem road bike"
+
+# Sort product suggestions client-side
+result.products(order: :price)   # numeric ascending
+result.products(order: :title)   # alphabetical
+result.products(order: :handle)  # alphabetical
+result.products(order: :id)      # numeric ascending
+# Accepted values: :id, :title, :handle, :price — raises ArgumentError otherwise
 ```
 
 ### Loading full models
@@ -227,7 +239,7 @@ end
 - **Rate limits** — Shopify's public endpoints allow roughly 2 req/s per IP. Showroom raises `TooManyRequests` (429) but does not retry automatically. Add your own back-off logic.
 - **`/products.json` may be disabled** on some stores. You'll receive a `NotFound` or `ServerError`.
 - **User-Agent** — some stores block the default Faraday UA. Showroom sets its own identifying header by default; override via `c.user_agent` if needed.
-- **Search result ordering is not stable** — `/search/suggest.json` does not guarantee a consistent order across requests. Results with equal relevance scores may alternate non-deterministically. Do not rely on `result.products.first` being the same between calls.
+- **Search result ordering is not stable** — `/search/suggest.json` does not guarantee a consistent order across requests. Use `result.products(order: :price)` (or another attribute) for deterministic client-side sorting.
 
 ## License
 
