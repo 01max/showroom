@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-04-24
+
 ### Added
 
 - `Product#similar` — searches for products similar to the current one via the search suggest endpoint; strips variant SKU fragments from the handle before querying, and falls back to a title search when the stripped-handle query returns no results
