@@ -170,5 +170,47 @@ module Showroom
         img['position'] == 1
       end
     end
+
+    # Searches for products similar to this one using the product handle as
+    # the query, with any variant SKU fragments stripped out first.
+    #
+    # SKU fragments are matched case-insensitively as hyphen-delimited segments
+    # within the handle. For example, a handle of +"o2feel-equo-42-rr2px5"+ on
+    # a product whose variant carries SKU +"RR2PX5"+ yields the query
+    # +"o2feel-equo-42"+.
+    #
+    # @param kwargs [Hash] additional options forwarded to +Client#search+
+    # @return [Array<Search::ProductSuggestion>]
+    def similar(**kwargs)
+      search_args = kwargs.merge(types: %i[product])
+
+      handle_similars = similar_by_stripped_handle(**search_args)
+      return handle_similars unless handle_similars.empty?
+
+      similar_by_title(**search_args)
+    end
+
+    private
+
+    # @api private
+    def similar_by_stripped_handle(**)
+      (client || Showroom.client).search(stripped_handle_search_query, **).products(order: 'price')
+    end
+
+    # @api private
+    def similar_by_title(**)
+      (client || Showroom.client).search(title, **).products(order: 'price')
+    end
+
+    # Strips variant SKU fragments from the handle to build the search query.
+    #
+    # @return [String]
+    def stripped_handle_search_query
+      skus = variants.filter_map { |v| v.sku.to_s.strip.downcase }.reject(&:empty?).uniq
+      skus.inject(handle.to_s) do |h, sku|
+        h.sub(/(^|-)#{Regexp.escape(sku)}((?=-)|$)/i, '')
+         .gsub(/^-|-$/, '')
+      end
+    end
   end
 end

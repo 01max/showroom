@@ -34,20 +34,52 @@ RSpec.describe Showroom::Search::Result do
   # products
   # -----------------------------------------------------------------------
   describe '#products' do
-    subject(:result) do
-      described_class.new('products' => [{ 'title' => 'Lorem Road Bike', 'handle' => 'lorem-road-bike' }])
+    subject(:result) { described_class.new('products' => raw_products) }
+
+    let(:raw_products) do
+      [
+        { 'id' => 3, 'title' => 'Zeta Bike',  'handle' => 'zeta-bike',  'price' => '300.00' },
+        { 'id' => 1, 'title' => 'Alpha Bike', 'handle' => 'alpha-bike', 'price' => '1200.00' },
+        { 'id' => 2, 'title' => 'Beta Bike',  'handle' => 'beta-bike',  'price' => '50.00' }
+      ]
     end
 
     it 'returns an array of ProductSuggestion' do
       expect(result.products).to all(be_a(Showroom::Search::ProductSuggestion))
     end
 
-    it 'maps title correctly' do
-      expect(result.products.first.title).to eq('Lorem Road Bike')
+    it 'preserves API order by default' do
+      expect(result.products.map(&:title)).to eq(['Zeta Bike', 'Alpha Bike', 'Beta Bike'])
     end
 
-    it 'maps handle correctly' do
-      expect(result.products.first.handle).to eq('lorem-road-bike')
+    context 'with order: :title' do
+      it 'sorts alphabetically by title' do
+        expect(result.products(order: :title).map(&:title)).to eq(['Alpha Bike', 'Beta Bike', 'Zeta Bike'])
+      end
+    end
+
+    context 'with order: :handle' do
+      it 'sorts alphabetically by handle' do
+        expect(result.products(order: :handle).map(&:handle)).to eq(%w[alpha-bike beta-bike zeta-bike])
+      end
+    end
+
+    context 'with order: :id' do
+      it 'sorts numerically by id' do
+        expect(result.products(order: :id).map(&:id)).to eq([1, 2, 3])
+      end
+    end
+
+    context 'with order: :price' do
+      it 'sorts numerically by price' do
+        expect(result.products(order: :price).map(&:price)).to eq(%w[50.00 300.00 1200.00])
+      end
+    end
+
+    context 'with an unsupported order attribute' do
+      it 'raises ArgumentError' do
+        expect { result.products(order: :vendor) }.to raise_error(ArgumentError)
+      end
     end
   end
 

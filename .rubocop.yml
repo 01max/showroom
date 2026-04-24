@@ -19,6 +19,9 @@ Style/StringLiteralsInInterpolation:
 Style/BlockDelimiters:
   EnforcedStyle: line_count_based
 
+RSpec/MultipleMemoizedHelpers:
+  Max: 8
+
 RSpec/SpecFilePathFormat:
   Exclude:
     - 'spec/showroom/models/**/*_spec.rb'

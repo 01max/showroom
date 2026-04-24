@@ -71,6 +71,14 @@ RSpec.describe Showroom::Product do
         expect(product.price).to eq('749.00')
       end
     end
+
+    context 'with no variants' do
+      let(:product) { described_class.new('variants' => []) }
+
+      it 'returns nil' do
+        expect(product.price).to be_nil
+      end
+    end
   end
 
   describe '#price_range' do
@@ -170,8 +178,8 @@ RSpec.describe Showroom::Product do
         expect(product.featured_image).to be_a(Showroom::ProductImage)
       end
 
-      it 'returns the image with position 1' do
-        expect(product.featured_image.position).to eq(1)
+      it 'returns the first image regardless of position' do
+        expect(product.featured_image).to eq(product.images.first)
       end
     end
 
@@ -180,6 +188,120 @@ RSpec.describe Showroom::Product do
 
       it 'returns nil' do
         expect(product.featured_image).to be_nil
+      end
+    end
+  end
+
+  # -----------------------------------------------------------------------
+  # #similar
+  # -----------------------------------------------------------------------
+  describe '#similar' do
+    let(:suggest_url)  { "#{base_url}/search/suggest.json" }
+    let(:suggest_body) { fixture('search_suggest.json') }
+
+    context 'when the handle ends with a SKU fragment' do
+      let(:product) do
+        described_class.new(
+          'handle' => 'o2feel-equo-42-rr2px5',
+          'variants' => [{ 'sku' => 'RR2PX5' }]
+        )
+      end
+
+      before do
+        stub_request(:get, suggest_url)
+          .with(query: hash_including('q' => 'o2feel-equo-42'))
+          .to_return(status: 200, body: suggest_body, headers: { 'Content-Type' => 'application/json' })
+      end
+
+      it 'returns an array of ProductSuggestion instances' do
+        expect(product.similar).to all(be_a(Showroom::Search::ProductSuggestion))
+      end
+
+      it 'searches with the handle stripped of the SKU' do
+        product.similar
+        expect(WebMock).to have_requested(:get, suggest_url)
+          .with(query: hash_including('q' => 'o2feel-equo-42'))
+      end
+    end
+
+    context 'when the handle does not contain any SKU fragment' do
+      let(:product) { described_class.new(JSON.parse(products_body)['products'][0]) }
+
+      before do
+        stub_request(:get, suggest_url)
+          .with(query: hash_including('q' => 'lorem-road-bike'))
+          .to_return(status: 200, body: suggest_body, headers: { 'Content-Type' => 'application/json' })
+      end
+
+      it 'searches with the original handle unchanged' do
+        product.similar
+        expect(WebMock).to have_requested(:get, suggest_url)
+          .with(query: hash_including('q' => 'lorem-road-bike'))
+      end
+    end
+
+    context 'when the product has no variants' do
+      let(:product) { described_class.new('handle' => 'some-product', 'variants' => []) }
+
+      before do
+        stub_request(:get, suggest_url)
+          .with(query: hash_including('q' => 'some-product'))
+          .to_return(status: 200, body: suggest_body, headers: { 'Content-Type' => 'application/json' })
+      end
+
+      it 'searches with the original handle' do
+        product.similar
+        expect(WebMock).to have_requested(:get, suggest_url)
+          .with(query: hash_including('q' => 'some-product'))
+      end
+    end
+
+    context 'when handle search returns no results (falls back to title)' do
+      let(:empty_suggest_body) { '{"resources":{"results":{"products":[]}}}' }
+      let(:product) do
+        described_class.new(
+          'title' => 'O2Feel Equo',
+          'handle' => 'o2feel-equo-42-rr2px5',
+          'variants' => [{ 'sku' => 'RR2PX5' }]
+        )
+      end
+
+      before do
+        stub_request(:get, suggest_url)
+          .with(query: hash_including('q' => 'o2feel-equo-42'))
+          .to_return(status: 200, body: empty_suggest_body, headers: { 'Content-Type' => 'application/json' })
+
+        stub_request(:get, suggest_url)
+          .with(query: hash_including('q' => 'O2Feel Equo'))
+          .to_return(status: 200, body: suggest_body, headers: { 'Content-Type' => 'application/json' })
+      end
+
+      it 'falls back to searching by title' do
+        product.similar
+        expect(WebMock).to have_requested(:get, suggest_url)
+          .with(query: hash_including('q' => 'O2Feel Equo'))
+      end
+    end
+
+    context 'when the product has an instance client' do
+      let(:other_url) { 'https://other-store.myshopify.com/search/suggest.json' }
+      let(:product) do
+        described_class.new(
+          'handle' => 'bike-abc123',
+          'variants' => [{ 'sku' => 'ABC123' }]
+        ).tap { |p| p.client = Showroom::Client.new(store: 'other-store.myshopify.com') }
+      end
+
+      before do
+        stub_request(:get, other_url)
+          .with(query: hash_including('q' => 'bike'))
+          .to_return(status: 200, body: suggest_body, headers: { 'Content-Type' => 'application/json' })
+      end
+
+      it 'uses the instance client' do
+        product.similar
+        expect(WebMock).to have_requested(:get, other_url)
+          .with(query: hash_including('q' => 'bike'))
       end
     end
   end
