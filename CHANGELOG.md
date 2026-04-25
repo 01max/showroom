@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `Search::ProductSuggestion#url` — returns the canonical storefront URL (`/products/:handle`), matching the existing `Product#url` API
+- `Search::CollectionSuggestion#url` — returns the canonical storefront URL (`/collections/:handle`), matching the existing `Collection#url` API
+- `Search::Result.new` now accepts a `client:` keyword and propagates it onto every suggestion it builds, so suggestions can resolve their store-specific URL without falling back to the global client
+
 ## [0.3.1] - 2026-04-25
 
 ### Changed

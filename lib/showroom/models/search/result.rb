@@ -12,8 +12,10 @@ module Showroom
     #   result.queries      # => [Array<QuerySuggestion>]
     class Result
       # @param results_hash [Hash] the +resources.results+ hash from the API response
-      def initialize(results_hash)
+      # @param client [Showroom::Client, nil] the client to propagate onto suggestions
+      def initialize(results_hash, client: nil)
         @data = results_hash
+        @client = client
       end
 
       PRODUCT_ORDER_ATTRS = %w[id title handle price].freeze
@@ -28,7 +30,7 @@ module Showroom
       # @raise [ArgumentError] when an unsupported order attribute is given
       def products(order: nil)
         validate_order!(order)
-        suggestions = @data.fetch('products', []).map { |h| ProductSuggestion.new(h) }
+        suggestions = build_suggestions('products', ProductSuggestion)
         return suggestions unless order
 
         sort_product_suggestions(suggestions, order)
@@ -38,31 +40,35 @@ module Showroom
       #
       # @return [Array<CollectionSuggestion>]
       def collections
-        @data.fetch('collections', []).map { |h| CollectionSuggestion.new(h) }
+        build_suggestions('collections', CollectionSuggestion)
       end
 
       # Returns page suggestions from the search result.
       #
       # @return [Array<PageSuggestion>]
       def pages
-        @data.fetch('pages', []).map { |h| PageSuggestion.new(h) }
+        build_suggestions('pages', PageSuggestion)
       end
 
       # Returns article suggestions from the search result.
       #
       # @return [Array<ArticleSuggestion>]
       def articles
-        @data.fetch('articles', []).map { |h| ArticleSuggestion.new(h) }
+        build_suggestions('articles', ArticleSuggestion)
       end
 
       # Returns query suggestions from the search result.
       #
       # @return [Array<QuerySuggestion>]
       def queries
-        @data.fetch('queries', []).map { |h| QuerySuggestion.new(h) }
+        build_suggestions('queries', QuerySuggestion)
       end
 
       private
+
+      def build_suggestions(key, klass)
+        @data.fetch(key, []).map { |h| klass.new(h).tap { |s| s.client = @client } }
+      end
 
       def validate_order!(order)
         return unless order

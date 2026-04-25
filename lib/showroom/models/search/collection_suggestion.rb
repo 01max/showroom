@@ -14,6 +14,14 @@ module Showroom
       def self.complete_model_class
         Collection
       end
+
+      # Returns the canonical storefront URL for this collection suggestion.
+      #
+      # @return [String]
+      def url
+        conn = client || Showroom.client
+        "#{conn.base_url}/collections/#{handle}"
+      end
     end
   end
 end

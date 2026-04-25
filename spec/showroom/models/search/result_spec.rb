@@ -34,7 +34,7 @@ RSpec.describe Showroom::Search::Result do
   # products
   # -----------------------------------------------------------------------
   describe '#products' do
-    subject(:result) { described_class.new('products' => raw_products) }
+    subject(:result) { described_class.new({ 'products' => raw_products }) }
 
     let(:raw_products) do
       [
@@ -88,7 +88,7 @@ RSpec.describe Showroom::Search::Result do
   # -----------------------------------------------------------------------
   describe '#collections' do
     subject(:result) do
-      described_class.new('collections' => [{ 'title' => 'Lorem Helmets', 'handle' => 'lorem-helmets' }])
+      described_class.new({ 'collections' => [{ 'title' => 'Lorem Helmets', 'handle' => 'lorem-helmets' }] })
     end
 
     it 'returns an array of CollectionSuggestion' do
@@ -105,7 +105,7 @@ RSpec.describe Showroom::Search::Result do
   # -----------------------------------------------------------------------
   describe '#pages' do
     subject(:result) do
-      described_class.new('pages' => [{ 'title' => 'About Lorem Bikes', 'handle' => 'about-lorem-bikes' }])
+      described_class.new({ 'pages' => [{ 'title' => 'About Lorem Bikes', 'handle' => 'about-lorem-bikes' }] })
     end
 
     it 'returns an array of PageSuggestion' do
@@ -122,7 +122,7 @@ RSpec.describe Showroom::Search::Result do
   # -----------------------------------------------------------------------
   describe '#articles' do
     subject(:result) do
-      described_class.new('articles' => [{ 'title' => 'How to Choose a Road Bike', 'handle' => 'how-to-choose' }])
+      described_class.new({ 'articles' => [{ 'title' => 'How to Choose a Road Bike', 'handle' => 'how-to-choose' }] })
     end
 
     it 'returns an array of ArticleSuggestion' do
@@ -139,7 +139,7 @@ RSpec.describe Showroom::Search::Result do
   # -----------------------------------------------------------------------
   describe '#queries' do
     subject(:result) do
-      described_class.new('queries' => [{ 'text' => 'lorem road bike' }])
+      described_class.new({ 'queries' => [{ 'text' => 'lorem road bike' }] })
     end
 
     it 'returns an array of QuerySuggestion' do
@@ -148,6 +148,53 @@ RSpec.describe Showroom::Search::Result do
 
     it 'maps text correctly' do
       expect(result.queries.first.text).to eq('lorem road bike')
+    end
+  end
+
+  # -----------------------------------------------------------------------
+  # client propagation
+  # -----------------------------------------------------------------------
+  describe 'client propagation' do
+    subject(:result) { described_class.new(data, client: client) }
+
+    let(:client) { Showroom::Client.new(store: 'example.myshopify.com') }
+
+    let(:data) do
+      {
+        'products' => [{ 'handle' => 'p1' }],
+        'collections' => [{ 'handle' => 'c1' }],
+        'pages' => [{ 'handle' => 'pg1' }],
+        'articles' => [{ 'handle' => 'a1' }],
+        'queries' => [{ 'text' => 'q1' }]
+      }
+    end
+
+    it 'sets the client on product suggestions' do
+      expect(result.products.first.client).to be(client)
+    end
+
+    it 'sets the client on collection suggestions' do
+      expect(result.collections.first.client).to be(client)
+    end
+
+    it 'sets the client on page suggestions' do
+      expect(result.pages.first.client).to be(client)
+    end
+
+    it 'sets the client on article suggestions' do
+      expect(result.articles.first.client).to be(client)
+    end
+
+    it 'sets the client on query suggestions' do
+      expect(result.queries.first.client).to be(client)
+    end
+
+    context 'when no client is given' do
+      subject(:result) { described_class.new(data) }
+
+      it 'leaves client nil on suggestions' do
+        expect(result.products.first.client).to be_nil
+      end
     end
   end
 end

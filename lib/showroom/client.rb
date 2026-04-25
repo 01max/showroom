@@ -93,7 +93,7 @@ module Showroom
       query['resources[type]'] = types.join(',') unless types.empty?
       query.merge!(params)
       raw = get('/search/suggest.json', query)
-      Search::Result.new(raw.dig('resources', 'results') || {})
+      Search::Result.new(raw.dig('resources', 'results') || {}, client: self)
     end
   end
 end
