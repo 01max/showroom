@@ -14,9 +14,9 @@ RSpec.describe Showroom::ProductVariant do
       expect(v.available?).to be(false)
     end
 
-    it 'returns false when available is absent' do
+    it 'returns nil when the available key is absent' do
       v = described_class.new({})
-      expect(v.available?).to be(false)
+      expect(v.available?).to be_nil
     end
 
     context 'with fixture data (S/Red variant — available)' do
@@ -39,6 +39,23 @@ RSpec.describe Showroom::ProductVariant do
       end
 
       it { is_expected.not_to be_available }
+    end
+  end
+
+  describe '#availability_known?' do
+    it 'returns true when the available key is present and true' do
+      v = described_class.new('available' => true)
+      expect(v.availability_known?).to be(true)
+    end
+
+    it 'returns true when the available key is present and false' do
+      v = described_class.new('available' => false)
+      expect(v.availability_known?).to be(true)
+    end
+
+    it 'returns false when the available key is absent' do
+      v = described_class.new({})
+      expect(v.availability_known?).to be(false)
     end
   end
 

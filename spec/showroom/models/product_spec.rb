@@ -61,6 +61,82 @@ RSpec.describe Showroom::Product do
 
       it { expect(product.available?).to be(false) }
     end
+
+    context 'when a top-level available key is present (true)' do
+      let(:product) do
+        described_class.new('available' => true,
+                            'variants' => [{ 'available' => false }])
+      end
+
+      it 'short-circuits and returns true without consulting variants' do
+        expect(product.available?).to be(true)
+      end
+    end
+
+    context 'when a top-level available key is present (false)' do
+      let(:product) do
+        described_class.new('available' => false,
+                            'variants' => [{ 'available' => true }])
+      end
+
+      it 'short-circuits and returns false without consulting variants' do
+        expect(product.available?).to be(false)
+      end
+    end
+
+    context 'when no variant exposes availability' do
+      let(:product) do
+        described_class.new('variants' => [{ 'price' => '10.00' }, { 'price' => '12.00' }])
+      end
+
+      it 'returns nil' do
+        expect(product.available?).to be_nil
+      end
+    end
+
+    context 'when variants mix unknown and false' do
+      let(:product) do
+        described_class.new('variants' => [{ 'available' => false }, { 'price' => '10.00' }])
+      end
+
+      it 'returns nil since at least one variant might be available' do
+        expect(product.available?).to be_nil
+      end
+    end
+
+    context 'when variants mix unknown and true' do
+      let(:product) do
+        described_class.new('variants' => [{ 'available' => true }, { 'price' => '10.00' }])
+      end
+
+      it 'returns true' do
+        expect(product.available?).to be(true)
+      end
+    end
+  end
+
+  describe '#availability_known?' do
+    context 'when the top-level available key is present' do
+      let(:product) { described_class.new('available' => false, 'variants' => []) }
+
+      it { expect(product.availability_known?).to be(true) }
+    end
+
+    context 'when at least one variant exposes availability' do
+      let(:product) do
+        described_class.new('variants' => [{ 'price' => '10.00' }, { 'available' => false }])
+      end
+
+      it { expect(product.availability_known?).to be(true) }
+    end
+
+    context 'when neither the product nor any variant exposes availability' do
+      let(:product) do
+        described_class.new('variants' => [{ 'price' => '10.00' }, { 'price' => '12.00' }])
+      end
+
+      it { expect(product.availability_known?).to be(false) }
+    end
   end
 
   describe '#price' do

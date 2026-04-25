@@ -10,11 +10,24 @@ module Showroom
   class ProductVariant < Resource
     main_attrs :id, :title, :price, :compare_at_price, :sku
 
-    # Returns true when the variant is available for purchase.
+    # Returns true when the variant is available for purchase, false when
+    # explicitly unavailable, or nil when the source payload omits the
+    # +available+ key (some Shopify storefronts do not expose it on
+    # +/products/{handle}.json+).
+    #
+    # @return [Boolean, nil]
+    def available?
+      return nil unless availability_known? # rubocop:disable Style/ReturnNilInPredicateMethodDefinition
+
+      @attrs['available'] == true
+    end
+
+    # Returns true when the source payload included an +available+ key,
+    # making {#available?} authoritative.
     #
     # @return [Boolean]
-    def available?
-      @attrs['available'] == true
+    def availability_known?
+      @attrs.key?('available')
     end
 
     # Returns true when +compare_at_price+ is present and greater than +price+.

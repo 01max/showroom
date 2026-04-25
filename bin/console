@@ -6,5 +6,12 @@ $LOAD_PATH.unshift(File.expand_path('../lib', __dir__))
 require 'showroom'
 require 'irb'
 
+Showroom.configure do |config|
+  config.store = 'upway.fr'
+  config.debug = true
+end
+
+# o2feel = Showroom::Collection.find('o2feel'); cargos = o2feel.products.select { |prd| prd.title.downcase.include?('equo') }
+
 puts 'Showroom console loaded. `Showroom` is available.'
 IRB.start(__FILE__)
