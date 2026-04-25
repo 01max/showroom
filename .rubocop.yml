@@ -19,6 +19,9 @@ Style/StringLiteralsInInterpolation:
 Style/BlockDelimiters:
   EnforcedStyle: line_count_based
 
+Metrics/ClassLength:
+  Max: 110
+
 RSpec/MultipleMemoizedHelpers:
   Max: 8
 

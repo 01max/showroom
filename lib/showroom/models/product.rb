@@ -125,11 +125,32 @@ module Showroom
       prices.length == 1 ? prices.first : "#{prices.min} - #{prices.max}"
     end
 
-    # Returns true when at least one variant is available for purchase.
+    # Returns true when the product is available for purchase, false when it
+    # is not, or nil when availability cannot be determined from the payload.
+    #
+    # If the response carries a top-level +available+ key, that value wins.
+    # Otherwise the result is aggregated from variants:
+    # any variant +true+ → +true+; all variants +false+ → +false+;
+    # otherwise (mix of +false+ and unknowns, or all unknown) → +nil+.
+    #
+    # @return [Boolean, nil]
+    def available?
+      return @attrs['available'] == true if @attrs.key?('available')
+
+      states = variants.map(&:available?)
+      return true  if states.include?(true)
+      return false if states.all? { |s| s == false }
+
+      nil # rubocop:disable Style/ReturnNilInPredicateMethodDefinition
+    end
+
+    # Returns true when product-level availability can be determined,
+    # either from a top-level +available+ key or from at least one variant
+    # whose own availability is known.
     #
     # @return [Boolean]
-    def available?
-      variants.any?(&:available?)
+    def availability_known?
+      @attrs.key?('available') || variants.any?(&:availability_known?)
     end
 
     # Returns the first image, or nil if there are no images.
