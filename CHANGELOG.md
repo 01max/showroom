@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-04-25
+
 ### Changed
 
 - `ProductVariant#available?` now returns `nil` (instead of `false`) when the source payload omits the `available` key — some Shopify storefronts do not expose it on `/products/{handle}.json`, so distinguishing "unknown" from "unavailable" is necessary to avoid silently reporting every variant as out of stock

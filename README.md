@@ -75,8 +75,9 @@ product = Showroom::Product.find('lorem-road-bike')
 product.title          # => "Lorem Road Bike"
 product.handle         # => "lorem-road-bike"
 product.vendor         # => "Lorem Cycles"
-product.available?     # => true  (any variant in stock)
-product.price          # => "749.00"  (lowest variant price)
+product.available?          # => true | false | nil  (nil when no variant exposes availability)
+product.availability_known? # => true when availability can be determined
+product.price               # => "749.00"  (lowest variant price)
 product.price_range    # => "749.00–899.00"
 product.prices         # => ["749.00", "899.00"]  (unique prices from all variants)
 product.url            # => "https://acme.myshopify.com/products/lorem-road-bike"
@@ -90,7 +91,7 @@ product.similar.first.load              # => Showroom::Product (full record)
 
 # Variants
 product.variants.each do |v|
-  puts "#{v.title}  #{v.price}  #{v.compare_at_price}  on_sale=#{v.on_sale?}  available=#{v.available?}"
+  puts "#{v.title}  #{v.price}  #{v.compare_at_price}  on_sale=#{v.on_sale?}  available=#{v.available?}  availability_known=#{v.availability_known?}"
 end
 
 # All pages — returns an Enumerator
