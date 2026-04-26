@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-04-25
+
 ### Added
 
 - `Search::ProductSuggestion#url` — returns the canonical storefront URL (`/products/:handle`), matching the existing `Product#url` API
